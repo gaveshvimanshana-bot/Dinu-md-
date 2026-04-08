@@ -41,7 +41,7 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
                 forwardingScore: 999,
                 isForwarded: true,
                 forwardedNewsletterMessageInfo: {
-                    newsletterJid: '120363395674230271@newsletter',
+                    newsletterJid: '120363405437936771@newsletter',
                     newsletterName: 'VIMA-𝐌𝐃',
                     serverMessageId: 190
                 }
