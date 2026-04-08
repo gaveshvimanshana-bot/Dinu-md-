@@ -3,7 +3,7 @@ const os = require("os");
 const { runtime } = require('../lib/functions');
 
 cmd({
-    pattern: "alive",
+    pattern: "alive/bot",
     alias: ["status", "runtime", "uptime"],
     desc: "Check uptime and system status with audio",
     category: "main",
