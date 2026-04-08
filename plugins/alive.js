@@ -7,30 +7,30 @@ cmd({
     alias: ["status", "runtime", "uptime"],
     desc: "Check uptime and system status",
     category: "main",
-    react: "👋",
+    react: "💫",
     filename: __filename
 },
 async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply }) => {
     try {
         // Generate system status message
         const status = `          
-╭━━〔 *𝐇𝐀𝐒𝐇𝐀𝐍-𝐌𝐃* 〕━━┈⊷
+╭━━〔 *VIMA-𝐌𝐃* 〕━━┈⊷
 ┃◈╭─────────────·๏
 ┃◈┃• *👋 ʜɪ*: ${pushname}
 ┃◈┃• *⏳ ᴜᴘᴛɪᴍᴇ*:  ${runtime(process.uptime())} 
 ┃◈┃• *📟 ʀᴀᴍ*: ${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)}MB / ${(os.totalmem() / 1024 / 1024).toFixed(2)}MB
-┃◈┃• *👨‍💻 ᴏᴡɴᴇʀ*: ᴍʀ ʜᴀꜱʜᴜᴜ </>
+┃◈┃• *👨‍💻 ᴏᴡɴᴇʀ*: ᴍʀ 𝚐𝚊𝚟𝚎𝚜𝚑 </>
 ┃◈└───────────┈⊷
 ╰──────────────┈⊷
 
-*𝐇𝐀𝐒𝐇𝐀𝐍-𝐌𝐃 𝐌𝐔𝐋𝐓𝐈 𝐃𝐄𝐕𝐈𝐂𝐄 𝐖𝐇𝐀𝐓𝐒𝐀𝐏𝐏 𝐁𝐎𝐓 𝐂𝐑𝐄𝐀𝐓𝐄𝐃 𝐁𝐘 𝐌𝐑 𝐇𝐀𝐒𝐇𝐔𝐔 𝐂𝐎𝐃𝐄𝐑 | 𝐓𝐇𝐈𝐒 𝐈𝐒 𝐀 𝐕𝐄𝐑𝐒𝐈𝐎𝐍 1 𝐏𝐑𝐎𝐉𝐄𝐂𝐓 😚🩵*
+*VIMA-𝐌𝐃 𝐌𝐔𝐋𝐓𝐈 𝐃𝐄𝐕𝐈𝐂𝐄 𝐖𝐇𝐀𝐓𝐒𝐀𝐏𝐏 𝐁𝐎𝐓 𝐂𝐑𝐄𝐀𝐓𝐄𝐃 𝐁𝐘 𝐌𝐑 VIMA 𝐂𝐎𝐃𝐄𝐑 | 𝐓𝐇𝐈𝐒 𝐈𝐒 𝐀 𝐕𝐄𝐑𝐒𝐈𝐎𝐍 1 BOT 😚🩵*
 
      ⭕ 𝗙𝗢𝗟𝗟𝗢𝗪 𝗢𝗨𝗥 𝗪𝗛𝗔𝗧𝗦𝗔𝗣𝗣 𝗖𝗛𝗔𝗡𝗡𝗘𝗟
      
-*https://whatsapp.com/channel/0029VazhnLzK0IBdwXG4152o*
+*https://whatsapp.com/channel/0029VbC5HIn9mrGW7Qtp3X1c*
 
   
-> *𝗣𝗢𝗪𝗘𝗥𝗘𝗗 𝗕𝗬 𝗛𝗔𝗦𝗛𝗔𝗡-𝗠𝗗 𝗩𝗘𝗥𝗦𝗜𝗢𝗡 1 💐💙*`;
+> *𝗣𝗢𝗪𝗘𝗥𝗘𝗗 𝗕𝗬 VIMA-𝗠𝗗 𝗩𝗘𝗥𝗦𝗜𝗢𝗡 1 💐💙*`;
 
 
         await conn.sendMessage(from, { 
