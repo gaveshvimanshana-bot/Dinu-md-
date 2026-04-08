@@ -1,35 +1,26 @@
-const { cmd, commands } = require('../command');
+const { cmd } = require('../command');
 const os = require("os");
 const { runtime } = require('../lib/functions');
 
 cmd({
     pattern: "alive",
     alias: ["status", "runtime", "uptime"],
-    desc: "Check uptime and system status",
+    desc: "Check uptime and system status with audio",
     category: "main",
-    react: "👋",
+    react: "💓",
     filename: __filename
 },
 async (conn, mek, m, { from, pushname, reply }) => {
     try {
-        // Date & Time (Sri Lanka)
-        const now = new Date();
-        const date = now.toLocaleDateString("en-GB", { timeZone: "Asia/Colombo" });
-        const time = now.toLocaleTimeString("en-GB", { timeZone: "Asia/Colombo" });
-
-        // Auto Greeting
-        const hours = now.getHours();
-        let greeting;
-        if(hours >= 5 && hours < 12) greeting = "Good Morning ☀️";
-        else if(hours >= 12 && hours < 16) greeting = "Good Afternoon 🌤️";
-        else if(hours >= 16 && hours < 19) greeting = "Good Evening 🌇";
-        else greeting = "Good Night 🌙";
+        // Sri Lanka Date & Time
+        const now = new Date().toLocaleString("en-US", { timeZone: "Asia/Colombo" });
+        const date = new Date(now).toLocaleDateString("en-GB");
+        const time = new Date(now).toLocaleTimeString("en-GB");
 
         // Status message
         const status = `          
 ╭━━〔 *𝗩𝗜𝗠𝗔-𝗠𝗗* 〕━━┈⊷
 ┃◈┃• 👋 Hi: ${pushname}
-┃◈┃• ${greeting}
 ┃◈┃• ⏳ Uptime: ${runtime(process.uptime())} 
 ┃◈┃• 📅 Date: ${date}
 ┃◈┃• 🕒 Time: ${time}
