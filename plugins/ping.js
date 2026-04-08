@@ -9,15 +9,13 @@ cmd({
     category: "main",
     react: "🏓",
     filename: __filename
-}, 
-async (conn, mek, m, { from, pushname, reply }) => {
+}, async (conn, mek, m, { from, pushname }) => {
     try {
-        // Start measuring latency
         const start = Date.now();
-        await reply('🏓 Pong! Checking latency...');
+        // Use sendMessage directly instead of reply
+        await conn.sendMessage(from, { text: '🏓 Pong! Checking latency...' }, { quoted: mek });
         const latency = Date.now() - start;
 
-        // Status message
         const status = `
 ╭━━〔 *PONG STATUS* 〕━━┈⊷
 ┃• Hi: ${pushname}
@@ -28,11 +26,10 @@ async (conn, mek, m, { from, pushname, reply }) => {
 ╰──────────────┈⊷
 `;
 
-        // Reply with system info
-        await reply(status);
+        await conn.sendMessage(from, { text: status }, { quoted: mek });
 
     } catch (e) {
         console.error("Error in ping command:", e);
-        reply(`Error: ${e.message}`);
+        await conn.sendMessage(from, { text: `Error: ${e.message}` }, { quoted: mek });
     }
 });
