@@ -40,10 +40,6 @@ async (conn, mek, m, { from, pushname, reply }) => {
                 mentionedJid: [m.sender],
                 forwardingScore: 999,
                 isForwarded: true
-                forwardedNewsletterMessageInfo: {
-                     newsletterJid: '120363405437936771@newsletter',
-                     newsletterName: '𝗩𝗜𝗠𝗔-𝗠𝗗',
-                     serverMessageId: 190
             }
         }, { quoted: mek });
 
