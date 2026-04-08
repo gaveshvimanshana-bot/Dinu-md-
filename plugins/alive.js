@@ -3,11 +3,11 @@ const os = require("os");
 const { runtime } = require('../lib/functions');
 
 cmd({
-    pattern: "alive/bot",
+    pattern: "alive",
     alias: ["status", "runtime", "uptime"],
     desc: "Check uptime and system status with audio",
     category: "main",
-    react: "💓",
+    react: "👋",
     filename: __filename
 },
 async (conn, mek, m, { from, pushname, reply }) => {
@@ -19,22 +19,18 @@ async (conn, mek, m, { from, pushname, reply }) => {
 
         // Status message
         const status = `          
-╭━━〔 *𝗩𝗜𝗠𝗔-𝗠𝗗* 〕━━┈⊷
-┃◈┃• 👋 Hi: ${pushname}
-┃◈┃• ⏳ Uptime: ${runtime(process.uptime())} 
-┃◈┃• 📅 Date: ${date}
-┃◈┃• 🕒 Time: ${time}
-┃◈┃• 📟 RAM: ${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)}MB / ${(os.totalmem() / 1024 / 1024).toFixed(2)}MB
-┃◈┃• 👨‍💻 Owner: Mr Gavesh
-┃◈┃• 📦 Version: v1.0.0
+╭━━〔 *𝑽𝑰𝑴𝑨-𝑴𝑫* 〕━━┈⊷
+┃〠┃• 👋 Hi: ${pushname}
+┃〠┃• ⏳ Uptime: ${runtime(process.uptime())} 
+┃〠┃• 📅 Date: ${date}
+┃〠┃• 🕒 Time: ${time}
+┃〠┃• 📟 RAM: ${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)}MB / ${(os.totalmem() / 1024 / 1024).toFixed(2)}MB
+┃〠┃• 👨‍💻 Owner: Mr Gαʋҽʂԋ🔥
+┃〠┃• 📦 𝚟𝚎𝚛𝚜𝚒𝚘𝚗: v1.0.0
 ╰──────────────┈⊷
 
-*VIMA-MD MULTI DEVICE WHATSAPP BOT CREATED BY MR VIMA CODER 😚🩵*
-
-⭕ FOLLOW OUR WHATSAPP CHANNEL
-https://whatsapp.com/channel/0029VbC5HIn9mrGW7Qtp3X1c
-
-> POWERED BY VIMA-MD V1 😈💙`;
+*VIMA-MD MULTI DEVICE WHATSAPP BOT CREATED BY MR VIMA CODER 😚🔥
+> *POWERED BY VIMA-MD* 🔥💙`;
 
         // Send Image + Caption
         await conn.sendMessage(from, { 
