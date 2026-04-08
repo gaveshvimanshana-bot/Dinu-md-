@@ -12,12 +12,20 @@ cmd({
 },
 async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply }) => {
     try {
+
+        // Date & Time (Sri Lanka)
+        const now = new Date();
+        const date = now.toLocaleDateString("en-GB", { timeZone: "Asia/Colombo" });
+        const time = now.toLocaleTimeString("en-GB", { timeZone: "Asia/Colombo" });
+
         // Generate system status message
         const status = `          
 ╭━━〔 *𝗩𝗜𝗠𝗔-𝗠𝗗* 〕━━┈⊷
 ┃◈╭─────────────·๏
 ┃◈┃• *👋 ʜɪ*: ${pushname}
 ┃◈┃• *⏳ ᴜᴘᴛɪᴍᴇ*:  ${runtime(process.uptime())} 
+┃◈┃• *📅 ᴅᴀᴛᴇ*: ${date}
+┃◈┃• *🕒 ᴛɪᴍᴇ*: ${time}
 ┃◈┃• *📟 ʀᴀᴍ*: ${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)}MB / ${(os.totalmem() / 1024 / 1024).toFixed(2)}MB
 ┃◈┃• *👨‍💻 ᴏᴡɴᴇʀ*: ᴍʀ 𝚐𝚊𝚟𝚎𝚜𝚑 </>
 ┃◈└───────────┈⊷
@@ -32,9 +40,8 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
   
 > *𝗣𝗢𝗪𝗘𝗥𝗘𝗗 𝗕𝗬 𝗩𝗜𝗠𝗔-𝗠𝗗 𝗩 1😈💙*`;
 
-
         await conn.sendMessage(from, { 
-            image: { url: `https://raw.githubusercontent.com/gaveshvimanshana-bot/Dinu-md-/refs/heads/main/Imqge/file_0000000025707208a5167eff51d93f68%20(1).png` },  // Image URL
+            image: { url: `https://raw.githubusercontent.com/gaveshvimanshana-bot/Dinu-md-/refs/heads/main/Imqge/file_0000000025707208a5167eff51d93f68%20(1).png` },
             caption: status,
             contextInfo: {
                 mentionedJid: [m.sender],
