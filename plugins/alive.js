@@ -29,7 +29,7 @@ async (conn, mek, m, { from, pushname, reply }) => {
 ┃〠┃• 📦 𝚟𝚎𝚛𝚜𝚒𝚘𝚗: v1.0.0
 ╰──────────────┈⊷
 
-*VIMA-MD MULTI DEVICE WHATSAPP BOT CREATED BY MR VIMA CODER 😚🔥
+*VIMA-MD MULTI DEVICE WHATSAPP BOT CREATED BY MR VIMA CODER* 😚🔥
 > *POWERED BY VIMA-MD* 🔥💙`;
 
         // Send Image + Caption
