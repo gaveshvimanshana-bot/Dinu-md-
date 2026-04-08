@@ -34,7 +34,7 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
 
 
         await conn.sendMessage(from, { 
-            image: { url: `https://files.catbox.moe/vbo0vq.png` },  // Image URL
+            image: { url: `https://raw.githubusercontent.com/gaveshvimanshana-bot/Dinu-md-/refs/heads/main/Imqge/file_0000000025707208a5167eff51d93f68%20(1).png` },  // Image URL
             caption: status,
             contextInfo: {
                 mentionedJid: [m.sender],
@@ -42,7 +42,7 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
                 isForwarded: true,
                 forwardedNewsletterMessageInfo: {
                     newsletterJid: '120363395674230271@newsletter',
-                    newsletterName: '𝐇𝐀𝐒𝐇𝐀𝐍-𝐌𝐃',
+                    newsletterName: 'VIMA-𝐌𝐃',
                     serverMessageId: 190
                 }
             }
