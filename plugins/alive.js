@@ -24,7 +24,7 @@ async (conn, mek, m, { from, pushname, reply }) => {
         // -------------------------------
         const status = `
 ╭━━〔 *𝑽𝑰𝑴𝑨-𝑴𝐃* 〕━━┈⊷
-┃〠┃• 👋 Hi: ${pushname}
+┃〠┃•👋 Hi: ${pushname}
 ┃〠┃• ⏳ Uptime: ${runtime(process.uptime())}
 ┃〠┃• 📅 Date: ${date}
 ┃〠┃• 🕒 Time: ${time}
@@ -48,9 +48,9 @@ async (conn, mek, m, { from, pushname, reply }) => {
                 forwardingScore: 999,
                 isForwarded: true,
                 forwardedNewsletterMessageInfo: {
-                    newsletterJid: '120363395674230271@newsletter', // Your channel ID
+                    newsletterJid: '120363405437936771@newsletter', 
                     newsletterName: '𝐕𝐈𝐌𝐀-𝐌𝐃',
-                    serverMessageId: 190 // Just a number
+                    serverMessageId: 190 
                 }
             }
         }, { quoted: mek });
