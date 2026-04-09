@@ -11,7 +11,7 @@ cmd({
     filename: __filename
 }, async(conn, mek, m, {from, pushname, reply}) => {
     try {
-        let aliveMessage = `
+        let aliveMsg = `
 👋 Hi ${pushname}!
 ✨ DARK-CYBER-MD is online!
 
@@ -22,11 +22,11 @@ cmd({
 💡 Stay tuned for commands!`;
 
         await conn.sendMessage(from, {
-            image: { url: config.ALIVE_IMG },
-            caption: aliveMessage
+            image: { url: 'https://raw.githubusercontent.com/gaveshvimanshana-bot/Dinu-md-/refs/heads/main/Imqge/file_0000000025707208a5167eff51d93f68%20(1).png' },
+            caption: aliveMsg
         }, { quoted: mek });
 
-    } catch(e) {
+    } catch (e) {
         console.log(e);
         reply(`❌ Error: ${e}`);
     }
@@ -125,7 +125,7 @@ ${menu.tools}
 > *©POWERED BY VIMA-MD*`;
 
         await conn.sendMessage(from, {
-            image: { url: `https://raw.githubusercontent.com/gaveshvimanshana-bot/Dinu-md-/refs/heads/main/Imqge/file_0000000025707208a5167eff51d93f68%20(1).png` },
+            image: { url: 'https://raw.githubusercontent.com/gaveshvimanshana-bot/Dinu-md-/refs/heads/main/Imqge/file_0000000025707208a5167eff51d93f68%20(1).png' },
             caption: madeMenu
         }, { quoted: mek });
 
