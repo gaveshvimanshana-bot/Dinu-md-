@@ -2,8 +2,7 @@ const config = require('../config');
 const { cmd, commands } = require('../command');
 const os = require("os");
 const { runtime } = require('../lib/functions');
-const axios = require("axios");
-const yts = require("yt-search");
+const yts = require('yt-search');
 
 //================== ALIVE ==================
 cmd({
@@ -63,18 +62,17 @@ cmd({
         let sys = `
 💻 SYSTEM
 OS: ${os.platform()}
-CPU: ${os.cpus().length}
+CPU: ${os.cpus().length} cores
 RAM: ${used}/${total} GB
 UPTIME: ${runtime(process.uptime())}`;
 
         await conn.sendMessage(from, { text: sys }, { quoted: mek });
-
     } catch {
         reply("Error");
     }
 });
 
-//================== MENU ==================
+//================== MENU WITH BUTTONS ==================
 cmd({
     pattern: "menu",
     category: "main",
@@ -82,57 +80,91 @@ cmd({
     filename: __filename
 }, async(conn, mek, m, { from, pushname, reply }) => {
     try {
-        let menu = {
-            main:'', download:'', group:'', owner:'',
-            convert:'', ai:'', tools:'', search:'',
-            fun:'', voice:'', other:''
-        };
+        let menuText = `
+👋 Hi ${pushname}!
+🕒 ${new Date().toLocaleString()}
+🛠 Owner: Gavesh
+📦 Version: 1.0
 
-        for (let c of commands) {
-            if (c.pattern && !c.dontAddCommandList) {
-                menu[c.category] += `.${c.pattern}\n`;
-            }
-        }
+⚡ Command Panel
+1✳ Download
+2✳ Group
+3✳ Other
+`;
 
-        let txt = `
-👋 Hello ${pushname}
-
-⏳ ${runtime(process.uptime())}
-
-🔧 Main
-${menu.main}
-
-👥 Group
-${menu.group}
-
-📥 Download
-${menu.download}
-
-> VIMA-MD`;
+        let buttons = [
+            { buttonId: 'menu_download', buttonText: { displayText: '1 Download' }, type: 1 },
+            { buttonId: 'menu_group', buttonText: { displayText: '2 Group' }, type: 1 },
+            { buttonId: 'menu_other', buttonText: { displayText: '3 Other' }, type: 1 }
+        ];
 
         await conn.sendMessage(from, {
-            image: { url: 'https://raw.githubusercontent.com/gaveshvimanshana-bot/Dinu-md-/refs/heads/main/Imqge/file_0000000025707208a5167eff51d93f68%20(1).png' },
-            caption: txt
+            text: menuText,
+            buttons: buttons,
+            headerType: 1
         }, { quoted: mek });
 
-    } catch {
-        reply("Error");
+    } catch (e) {
+        console.log(e);
+        reply("❌ Error");
     }
 });
 
-//================== GROUP COMMANDS ==================
+//================== MENU BUTTON HANDLERS ==================
+cmd({
+    pattern: "menu_download",
+    category: "main",
+    filename: __filename
+}, async (conn, mek, m, { from, reply }) => {
+    let text = `
+📥 Download Menu
+1✳ FB
+2✳ APK
+`;
+    await conn.sendMessage(from, { text }, { quoted: mek });
+});
 
+cmd({
+    pattern: "menu_group",
+    category: "main",
+    filename: __filename
+}, async (conn, mek, m, { from, reply }) => {
+    let text = `
+👥 Group Menu
+1✳ Kick
+2✳ Add
+3✳ Promote
+4✳ Demote
+`;
+    await conn.sendMessage(from, { text }, { quoted: mek });
+});
+
+cmd({
+    pattern: "menu_other",
+    category: "main",
+    filename: __filename
+}, async (conn, mek, m, { from, reply }) => {
+    let text = `
+⚙️ Other Menu
+1✳ Ping
+2✳ Alive
+3✳ System
+`;
+    await conn.sendMessage(from, { text }, { quoted: mek });
+});
+
+//================== GROUP COMMANDS ==================
 // Kick
 cmd({
     pattern: "kick",
     category: "group",
     filename: __filename
-}, async(conn, mek, m, { from, isGroup, isAdmins, isBotAdmins, isOwner, quoted, reply, m: msg }) => {
+}, async(conn, mek, m, { from, isGroup, isAdmins, isBotAdmins, isOwner, quoted, reply }) => {
     if (!isGroup) return reply("Group only");
     if (!isAdmins && !isOwner) return reply("Admin only");
     if (!isBotAdmins) return reply("Bot not admin");
 
-    let user = quoted ? quoted.sender : msg.mentionedJid[0];
+    let user = quoted ? quoted.sender : m.mentionedJid[0];
     if (!user) return reply("Reply or tag user");
 
     await conn.groupParticipantsUpdate(from, [user], "remove");
@@ -154,77 +186,4 @@ cmd({
 
     await conn.groupParticipantsUpdate(from, [num], "add");
     reply("✅ Added");
-});
-
-// Promote
-cmd({
-    pattern: "promote",
-    category: "group",
-    filename: __filename
-}, async(conn, mek, m, { from, isGroup, isAdmins, isBotAdmins, isOwner, quoted, reply, m: msg }) => {
-    if (!isGroup) return reply("Group only");
-    if (!isAdmins && !isOwner) return reply("Admin only");
-    if (!isBotAdmins) return reply("Bot not admin");
-
-    let user = quoted ? quoted.sender : msg.mentionedJid[0];
-    if (!user) return reply("Reply or tag");
-
-    await conn.groupParticipantsUpdate(from, [user], "promote");
-    reply("✅ Promoted");
-});
-
-// Demote
-cmd({
-    pattern: "demote",
-    category: "group",
-    filename: __filename
-}, async(conn, mek, m, { from, isGroup, isAdmins, isBotAdmins, isOwner, quoted, reply, m: msg }) => {
-    if (!isGroup) return reply("Group only");
-    if (!isAdmins && !isOwner) return reply("Admin only");
-    if (!isBotAdmins) return reply("Bot not admin");
-
-    let user = quoted ? quoted.sender : msg.mentionedJid[0];
-    if (!user) return reply("Reply or tag");
-
-    await conn.groupParticipantsUpdate(from, [user], "demote");
-    reply("✅ Demoted");
-});
-
-//================== SONG DOWNLOAD ==================
-cmd({
-    pattern: "song",
-    alias: ["play"],
-    react: "🎵",
-    desc: "Download song",
-    category: "download",
-    filename: __filename
-}, async (conn, mek, m, { from, q, reply }) => {
-    try {
-        if (!q) return reply("❌ Song name ekak denna!");
-
-        let search = await yts(q);
-        if (!search.videos.length) return reply("❌ Not found!");
-
-        let video = search.videos[0];
-
-        await reply("⏳ Downloading...");
-
-        // Stable API for mp3
-        let api = `https://vihangayt.me/download/ytmp3?url=${encodeURIComponent(video.url)}`;
-        let res = await axios.get(api);
-        let data = res.data;
-
-        if (!data.status) return reply("❌ Download failed!");
-
-        await conn.sendMessage(from, {
-            audio: { url: data.result.dl_link },
-            mimetype: "audio/mpeg"
-        }, { quoted: mek });
-
-        reply(`✅ ${video.title}`);
-
-    } catch (e) {
-        console.log(e);
-        reply("❌ Song download error!");
-    }
 });
