@@ -7,7 +7,7 @@ cmd({
     alias: ["status", "runtime", "uptime","bot"],
     desc: "Check uptime and system status with audio",
     category: "main",
-    react: "👋",
+    react: "💓",
     filename: __filename
 }, 
 async (conn, mek, m, { from, pushname, reply }) => {
