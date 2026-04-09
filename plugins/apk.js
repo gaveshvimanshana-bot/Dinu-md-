@@ -44,7 +44,7 @@ cmd(
 ┃👨‍💻 Dev: ${app.developer?.name || "Unknown"}
 ┃🆔 Package: ${app.package || "N/A"}
 ╰━━━━━━━━━━━━━━━┈⊷
-  > Powefull 
+> *𝗣𝗢𝗪𝗘𝗥𝗘𝗗 𝗕𝗬 𝗩𝗜𝗠𝗔-𝗠𝗗 𝗩1 😈💙*
         `;
 
         // Send app icon (fallback to bot image)
