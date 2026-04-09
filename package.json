@@ -46,6 +46,7 @@
     "@mrnima/facebook-downloader":"1.0.0",
     "mrnima-moviedl":"1.0.0",
     "node":">=20.0.0",
-    "@xaviabot/fb-downloader":"^1.0.14"
+    "@xaviabot/fb-downloader":"^1.0.14",
+    "@vreden/youtube_scraper":"^1.2.8"
   }
 }
