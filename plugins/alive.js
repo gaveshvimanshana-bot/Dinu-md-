@@ -52,6 +52,39 @@ cmd({
     }
 });
 
+//================== SYSTEM COMMAND ==================
+cmd({
+    pattern: "system",
+    desc: "Show system info",
+    category: "main",
+    react: "💻",
+    filename: __filename
+}, async(conn, mek, m, { from, reply }) => {
+    try {
+        const totalMem = (os.totalmem() / (1024 * 1024 * 1024)).toFixed(2);
+        const freeMem = (os.freemem() / (1024 * 1024 * 1024)).toFixed(2);
+        const usedMem = (totalMem - freeMem).toFixed(2);
+        const cpu = os.cpus().length;
+        const platform = os.platform();
+        const uptime = runtime(process.uptime());
+
+        let sys = `
+💻 𝗦𝗬𝗦𝗧𝗘𝗠 𝗜𝗡𝗙𝗢 💻
+╭──────────●●►
+│ OS : ${platform}
+│ CPU : ${cpu} cores
+│ RAM : ${usedMem}GB / ${totalMem}GB
+│ Uptime : ${uptime}
+╰──────────●●►`;
+
+        await conn.sendMessage(from, { text: sys }, { quoted: mek });
+
+    } catch (e) {
+        console.log(e);
+        reply(`❌ Error: ${e}`);
+    }
+});
+
 //================== MENU COMMAND ==================
 cmd({
     pattern: "menu",
@@ -75,7 +108,6 @@ cmd({
             other: ''
         };
 
-        // Fill menu categories dynamically
         for (let i = 0; i < commands.length; i++) {
             if (commands[i].pattern && !commands[i].dontAddCommandList) {
                 menu[commands[i].category] += `.${commands[i].pattern}\n`;
@@ -87,39 +119,39 @@ cmd({
 
 ✨ 𝗪𝗲𝗹𝗰𝗼𝗺𝗲 𝘁𝗼 DARK-CYBER-MD ✨
 ╭─「 ᴄᴏᴍᴍᴀɴᴅꜱ ᴘᴀɴᴇʟ」
-│◈ яυηтιмє : ${runtime(process.uptime())}
-│◈ σωηєя ηαмє : Mr Hashuwh
-│◈ σωηєя ηυмвєя : 94713457207
+│◈ Runtime : ${runtime(process.uptime())}
+│◈ Owner : Mr Hashuwh
+│◈ Number : 94713457207
 ╰──────────●●►
 
-📥 *𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝 𝐌𝐞𝐧𝐮*
+📥 *Download*
 ${menu.download}
 
-👾 *𝐀𝐢 𝐌𝐞𝐧𝐮*
+👾 *AI*
 ${menu.ai}
 
-🔧 *𝐌𝐚𝐢𝐧 𝐌𝐞𝐧𝐮*
+🔧 *Main*
 ${menu.main}
 
-🎉 *𝐅𝐮𝐧 𝐌𝐞𝐧𝐮*
+🎉 *Fun*
 ${menu.fun}
 
-🔄 *𝐂𝐨𝐧𝐯𝐞𝐫𝐭 𝐌𝐞𝐧𝐮*
+🔄 *Convert*
 ${menu.convert}
 
-🔍 *𝐒𝐞𝐚𝐫𝐜𝐡 𝐌𝐞𝐧𝐮*
+🔍 *Search*
 ${menu.search}
 
-👥 *𝐆𝐫𝐨𝐮𝐩 𝐌𝐞𝐧𝐮*
+👥 *Group*
 ${menu.group}
 
-🔒 *𝐎𝐰𝐧𝐞𝐫 𝐌𝐞𝐧𝐮*
+🔒 *Owner*
 ${menu.owner}
 
-⚙️ *𝐎𝐭𝐡𝐞𝐫 𝐌𝐞𝐧𝐮*
+⚙️ *Other*
 ${menu.other}
 
-🛠️ *𝐓𝐨𝐨𝐥𝐬 𝐌𝐞𝐧𝐮*
+🛠️ *Tools*
 ${menu.tools}
 
 > *©POWERED BY VIMA-MD*`;
@@ -131,6 +163,6 @@ ${menu.tools}
 
     } catch(e) {
         console.log(e);
-        reply(`❌ 𝔼𝕣𝕣𝕠𝕣`);
+        reply(`❌ Error`);
     }
 });
