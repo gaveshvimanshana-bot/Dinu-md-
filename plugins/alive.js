@@ -131,7 +131,7 @@ let madeMenu = `
 
 > *©POWERED BY VIMA-MD*`
 
-return await conn.sendMessage(from,{image: {url: `https://files.catbox.moe/l06cb8.jpg`},caption:madeMenu},{quoted: mek})
+return await conn.sendMessage(from,{image: {url: `https://raw.githubusercontent.com/gaveshvimanshana-bot/Dinu-md-/refs/heads/main/Imqge/file_0000000025707208a5167eff51d93f68%20(1).png`},caption:madeMenu},{quoted: mek})
 }catch(e){
 console.log(e)
 reply(`𝔼𝕣𝕣𝕣𝕠𝕣`)
