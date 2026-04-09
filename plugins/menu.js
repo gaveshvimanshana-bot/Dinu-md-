@@ -1,102 +1,70 @@
-const { readEnv } = require("../lib/database");
-const { cmd, commands } = require("../command");
+const { cmd } = require('../command');
+const os = require("os");
+const { runtime } = require('../lib/functions');
 
-cmd(
-  {
+cmd({
     pattern: "menu",
-    alias: ["getmenu"],
-    desc: "Show all commands menu",
+    alias: ["status", "runtime", "uptime"],
+    desc: "Check uptime and system status with audio",
     category: "main",
-    filename: __filename,
-  },
-  async (
-    robin,
-    mek,
-    m,
-    {
-      from,
-      quoted,
-      body,
-      isCmd,
-      command,
-      args,
-      q,
-      isGroup,
-      sender,
-      senderNumber,
-      botNumber2,
-      botNumber,
-      pushname,
-      isMe,
-      isOwner,
-      groupMetadata,
-      groupName,
-      participants,
-      groupAdmins,
-      isBotAdmins,
-      isAdmins,
-      reply,
-    }
-  ) => {
+    react: "👋",
+    filename: __filename
+}, 
+async (conn, mek, m, { from, pushname, reply }) => {
     try {
-      const config = await readEnv(); // get prefix etc
-      let menu = {
-        main: "",
-        download: "",
-        group: "",
-        owner: "",
-        convert: "",
-        search: "",
-      };
+        // -------------------------------
+        // Sri Lanka Date & Time
+        // -------------------------------
+        const now = new Date().toLocaleString("en-US", { timeZone: "Asia/Colombo" });
+        const date = new Date(now).toLocaleDateString("en-GB");
+        const time = new Date(now).toLocaleTimeString("en-GB");
 
-      // Add commands to menu
-      for (let i = 0; i < commands.length; i++) {
-        const cmdObj = commands[i];
-        if (cmdObj.pattern && !cmdObj.dontAddCommandList) {
-          let cat = cmdObj.category || "misc";
-          if (!menu[cat]) menu[cat] = "";
-          menu[cat] += `▫️ ${config.PREFIX}${cmdObj.pattern}\n`;
-        }
-      }
+        // -------------------------------
+        // Status message
+        // -------------------------------
+        const status = `
+╭━━〔 *𝑽𝑰𝑴𝑨-𝑴𝐃* 〕━━┈⊷
+┃〠┃•👋 Hi: ${pushname}
+┃〠┃• ⏳ Uptime: ${runtime(process.uptime())}
+┃〠┃• 📅 Date: ${date}
+┃〠┃• 🕒 Time: ${time}
+┃〠┃• 📟 RAM: ${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)}MB / ${(os.totalmem() / 1024 / 1024).toFixed(2)}MB
+┃〠┃• 👨‍💻 Owner: Mr Gαʋҽʂԋ🔥
+┃〠┃• 📦 Version: v1.0.0
+╰──────────────┈⊷
 
-      let menuText = `👋 *Hello ${pushname}*
-
-| *MAIN COMMANDS* |
-${menu.main || "No commands"}
-
-| *DOWNLOAD COMMANDS* |
-${menu.download || "No commands"}
-
-| *GROUP COMMANDS* |
-${menu.group || "No commands"}
-
-| *OWNER COMMANDS* |
-${menu.owner || "No commands"}
-
-| *CONVERT COMMANDS* |
-${menu.convert || "No commands"}
-
-| *SEARCH COMMANDS* |
-${menu.search || "No commands"}
-
-🥶 𝐌𝐚𝐝𝐞 𝐛𝐲 𝐒_𝐈_𝐇_𝐈_𝐋_𝐄_𝐋 🥶
-
-> ROBIN MENU MSG
+*VIMA-MD MULTI DEVICE WHATSAPP BOT CREATED BY MR VIMA CODER* 😚🔥
+> *POWERED BY VIMA-MD* 🔥💙
 `;
 
-      await robin.sendMessage(
-        from,
-        {
-          image: {
-            url: "https://raw.githubusercontent.com/Dark-Robin/Bot-Helper/refs/heads/main/autoimage/Bot%20robin%20menu.jpg",
-          },
-          caption: menuText,
-        },
-        { quoted: mek }
-      );
+        // -------------------------------
+        // Send Image + Caption with Channel Forward Style
+        // -------------------------------
+        await conn.sendMessage(from, {
+            image: { url: 'https://raw.githubusercontent.com/gaveshvimanshana-bot/Dinu-md-/main/Imqge/file_0000000025707208a5167eff51d93f68%20(1).png' },
+            caption: status,
+            contextInfo: {
+                mentionedJid: [m.sender],
+                forwardingScore: 999,
+                isForwarded: true,
+                forwardedNewsletterMessageInfo: {
+                    newsletterJid: '120363405437936771@newsletter', 
+                    newsletterName: '𝐕𝐈𝐌𝐀-𝐌𝐃',
+                    serverMessageId: 190 
+                }
+            }
+        }, { quoted: mek });
+
+        // -------------------------------
+        // Send MP3 Audio
+        // -------------------------------
+        await conn.sendMessage(from, {
+            audio: { url: 'https://raw.githubusercontent.com/gaveshvimanshana-bot/Dinu-md-/main/Imqge/AUD-20240527-WA0004.mp3' },
+            mimetype: 'audio/mpeg'
+        }, { quoted: mek });
+
     } catch (e) {
-      console.error("[MENU ERROR]", e);
-      reply(`Error: ${e.message}`);
+        console.error("Error in alive command:", e);
+        reply(`An error occurred: ${e.message}`);
     }
-  }
-);
+});
