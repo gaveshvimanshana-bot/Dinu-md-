@@ -7,7 +7,7 @@ cmd({
     alias: ["status", "runtime", "uptime","bot"],
     desc: "Check uptime and system status with audio",
     category: "main",
-    react: "💓",
+    react: "👋",
     filename: __filename
 }, 
 async (conn, mek, m, { from, pushname, reply }) => {
@@ -23,7 +23,7 @@ async (conn, mek, m, { from, pushname, reply }) => {
         // Status message
         // -------------------------------
         const status = `
-╭━━〔 *𝑽𝑰𝑴𝑨-𝑴𝐃* 〕━━┈⊷
+╭━━〔 *ＶＩＭＡ-ＭＤ ✘* 〕━━┈⊷
 ┃〠┃•👋 Hi: ${pushname}
 ┃〠┃• ⏳ Uptime: ${runtime(process.uptime())}
 ┃〠┃• 📅 Date: ${date}
