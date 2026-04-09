@@ -1,9 +1,9 @@
 const config = require('../config');
 const { cmd, commands } = require('../command');
 const os = require("os");
-const { getBuffer, getGroupAdmins, getRandom, h2k, isUrl, Json, runtime, sleep, fetchJson } = require('../lib/functions');
+const { runtime } = require('../lib/functions');
 
-//================== ALIVE COMMAND ==================
+//================== ALIVE ==================
 cmd({
     pattern: "alive",
     desc: "Check if bot is online",
@@ -17,9 +17,7 @@ cmd({
 
 ⏳ Uptime: ${runtime(process.uptime())}
 🛠 Owner: Mr Hashuwh
-📞 Owner Number: 94713457207
-
-💡 Stay tuned for commands!`;
+📞 Owner Number: 94713457207`;
 
         await conn.sendMessage(from, {
             image: { url: 'https://raw.githubusercontent.com/gaveshvimanshana-bot/Dinu-md-/refs/heads/main/Imqge/file_0000000025707208a5167eff51d93f68%20(1).png' },
@@ -32,137 +30,182 @@ cmd({
     }
 });
 
-//================== PING COMMAND ==================
+//================== PING ==================
 cmd({
     pattern: "ping",
-    desc: "Check bot's response time.",
+    desc: "Check bot speed",
     category: "main",
     react: "⚡",
     filename: __filename
 }, async (conn, mek, m, { from, reply }) => {
     try {
-        const startTime = Date.now();
-        const message = await conn.sendMessage(from, { text: '*```Pinging...```*' });
-        const endTime = Date.now();
-        const ping = endTime - startTime;
-        await conn.sendMessage(from, { text: `*DARK-CYBER-MD* : _${ping}ms 💥_` }, { quoted: message });
+        const start = Date.now();
+        const msg = await conn.sendMessage(from, { text: '*```Pinging...```*' });
+        const ping = Date.now() - start;
+        await conn.sendMessage(from, { text: `⚡ Speed: ${ping}ms` }, { quoted: msg });
     } catch (e) {
         console.log(e);
         reply(`${e}`);
     }
 });
 
-//================== SYSTEM COMMAND ==================
+//================== SYSTEM ==================
 cmd({
     pattern: "system",
-    desc: "Show system info",
+    desc: "System info",
     category: "main",
     react: "💻",
     filename: __filename
 }, async(conn, mek, m, { from, reply }) => {
     try {
-        const totalMem = (os.totalmem() / (1024 * 1024 * 1024)).toFixed(2);
-        const freeMem = (os.freemem() / (1024 * 1024 * 1024)).toFixed(2);
-        const usedMem = (totalMem - freeMem).toFixed(2);
-        const cpu = os.cpus().length;
-        const platform = os.platform();
-        const uptime = runtime(process.uptime());
+        const total = (os.totalmem() / 1073741824).toFixed(2);
+        const free = (os.freemem() / 1073741824).toFixed(2);
+        const used = (total - free).toFixed(2);
 
         let sys = `
-💻 𝗦𝗬𝗦𝗧𝗘𝗠 𝗜𝗡𝗙𝗢 💻
-╭──────────●●►
-│ OS : ${platform}
-│ CPU : ${cpu} cores
-│ RAM : ${usedMem}GB / ${totalMem}GB
-│ Uptime : ${uptime}
-╰──────────●●►`;
+💻 SYSTEM INFO
+╭────────────
+│ OS : ${os.platform()}
+│ CPU : ${os.cpus().length}
+│ RAM : ${used}GB / ${total}GB
+│ Uptime : ${runtime(process.uptime())}
+╰────────────`;
 
         await conn.sendMessage(from, { text: sys }, { quoted: mek });
 
     } catch (e) {
         console.log(e);
-        reply(`❌ Error: ${e}`);
+        reply(`❌ Error`);
     }
 });
 
-//================== MENU COMMAND ==================
+//================== MENU ==================
 cmd({
     pattern: "menu",
-    desc: "Get the bot menu",
-    react: "📜",
+    desc: "Get menu",
     category: "main",
+    react: "📜",
     filename: __filename
 }, async(conn, mek, m, { from, pushname, reply }) => {
     try {
         let menu = {
-            main: '',
-            download: '',
-            group: '',
-            owner: '',
-            convert: '',
-            ai: '',
-            tools: '',
-            search: '',
-            fun: '',
-            voice: '',
-            other: ''
+            main: '', download: '', group: '', owner: '',
+            convert: '', ai: '', tools: '', search: '',
+            fun: '', voice: '', other: ''
         };
 
-        for (let i = 0; i < commands.length; i++) {
-            if (commands[i].pattern && !commands[i].dontAddCommandList) {
-                menu[commands[i].category] += `.${commands[i].pattern}\n`;
+        for (let cmd of commands) {
+            if (cmd.pattern && !cmd.dontAddCommandList) {
+                menu[cmd.category] += `.${cmd.pattern}\n`;
             }
         }
 
-        let madeMenu = `
-👋 𝐇𝐄𝐋𝐋𝐎, ${pushname}!
+        let text = `
+👋 Hello ${pushname}
 
-✨ 𝗪𝗲𝗹𝗰𝗼𝗺𝗲 𝘁𝗼 DARK-CYBER-MD ✨
-╭─「 ᴄᴏᴍᴍᴀɴᴅꜱ ᴘᴀɴᴇʟ」
-│◈ Runtime : ${runtime(process.uptime())}
-│◈ Owner : Mr Hashuwh
-│◈ Number : 94713457207
-╰──────────●●►
+⏳ Uptime: ${runtime(process.uptime())}
 
-📥 *Download*
+📥 Download
 ${menu.download}
 
-👾 *AI*
+🤖 AI
 ${menu.ai}
 
-🔧 *Main*
+🔧 Main
 ${menu.main}
 
-🎉 *Fun*
-${menu.fun}
-
-🔄 *Convert*
-${menu.convert}
-
-🔍 *Search*
-${menu.search}
-
-👥 *Group*
+👥 Group
 ${menu.group}
 
-🔒 *Owner*
-${menu.owner}
+🎉 Fun
+${menu.fun}
 
-⚙️ *Other*
-${menu.other}
-
-🛠️ *Tools*
+🛠 Tools
 ${menu.tools}
 
-> *©POWERED BY VIMA-MD*`;
+> VIMA-MD`;
 
         await conn.sendMessage(from, {
             image: { url: 'https://raw.githubusercontent.com/gaveshvimanshana-bot/Dinu-md-/refs/heads/main/Imqge/file_0000000025707208a5167eff51d93f68%20(1).png' },
-            caption: madeMenu
+            caption: text
         }, { quoted: mek });
 
-    } catch(e) {
+    } catch (e) {
         console.log(e);
-        reply(`❌ Error`);
+        reply("❌ Error");
     }
+});
+
+//================== GROUP COMMANDS ==================
+
+// Kick
+cmd({
+    pattern: "kick",
+    category: "group",
+    react: "❌",
+    filename: __filename
+}, async(conn, mek, m, { from, isGroup, isAdmins, isBotAdmins, quoted, reply }) => {
+    if (!isGroup) return reply("Group only");
+    if (!isAdmins) return reply("Admin only");
+    if (!isBotAdmins) return reply("Bot not admin");
+
+    let user = quoted ? quoted.sender : m.mentionedJid[0];
+    if (!user) return reply("Reply or tag user");
+
+    await conn.groupParticipantsUpdate(from, [user], "remove");
+    reply("✅ Done");
+});
+
+// Add
+cmd({
+    pattern: "add",
+    category: "group",
+    react: "➕",
+    filename: __filename
+}, async(conn, mek, m, { from, isGroup, isAdmins, isBotAdmins, args, reply }) => {
+    if (!isGroup) return reply("Group only");
+    if (!isAdmins) return reply("Admin only");
+    if (!isBotAdmins) return reply("Bot not admin");
+
+    let num = args[0]?.replace(/[^0-9]/g, "") + "@s.whatsapp.net";
+    if (!num) return reply("Give number");
+
+    await conn.groupParticipantsUpdate(from, [num], "add");
+    reply("✅ Added");
+});
+
+// Promote
+cmd({
+    pattern: "promote",
+    category: "group",
+    react: "⬆️",
+    filename: __filename
+}, async(conn, mek, m, { from, isGroup, isAdmins, isBotAdmins, quoted, reply }) => {
+    if (!isGroup) return reply("Group only");
+    if (!isAdmins) return reply("Admin only");
+    if (!isBotAdmins) return reply("Bot not admin");
+
+    let user = quoted ? quoted.sender : m.mentionedJid[0];
+    if (!user) return reply("Reply or tag");
+
+    await conn.groupParticipantsUpdate(from, [user], "promote");
+    reply("✅ Promoted");
+});
+
+// Demote
+cmd({
+    pattern: "demote",
+    category: "group",
+    react: "⬇️",
+    filename: __filename
+}, async(conn, mek, m, { from, isGroup, isAdmins, isBotAdmins, quoted, reply }) => {
+    if (!isGroup) return reply("Group only");
+    if (!isAdmins) return reply("Admin only");
+    if (!isBotAdmins) return reply("Bot not admin");
+
+    let user = quoted ? quoted.sender : m.mentionedJid[0];
+    if (!user) return reply("Reply or tag");
+
+    await conn.groupParticipantsUpdate(from, [user], "demote");
+    reply("✅ Demoted");
 });
