@@ -1,4 +1,3 @@
-
 const { cmd } = require("../command");
 const axios = require("axios");
 
@@ -11,53 +10,50 @@ cmd(
     category: "download",
     filename: __filename,
   },
-  async (
-    danuwa,
-    mek,
-    m,
-    {
-      from,
-      q,
-      reply,
-    }
-  ) => {
+  async (danuwa, mek, m, { from, q, reply }) => {
     try {
       if (!q) return reply("*🖼️ Please enter a keyword to search HD wallpapers!*");
 
       reply("*🔍 Searching for HD wallpapers... Please wait a moment.*");
 
-      const res = await axios.get(`https://wallhaven.cc/api/v1/search?q=${encodeURIComponent(q)}&sorting=random&resolutions=1920x1080,2560x1440,3840x2160`);
-      const wallpapers = res.data.data;
+      const res = await axios.get(
+        `https://wallhaven.cc/api/v1/search?q=${encodeURIComponent(q)}&sorting=random&resolutions=1920x1080,2560x1440,3840x2160`,
+        {
+          headers: { "User-Agent": "Mozilla/5.0" },
+        }
+      );
 
+      const wallpapers = res.data.data;
       if (!wallpapers || wallpapers.length === 0) {
         return reply("*❌ No HD wallpapers found for that keyword.*");
       }
 
-      const selected = wallpapers.slice(0, 5); // get top 5
+      const selected = wallpapers.slice(0, 5); // top 5
 
-      const header = `WALLPAPER DOWNLOADER`;
-
+      // Send intro image
       await danuwa.sendMessage(
         from,
         {
-          image: {
-            url: "https://github.com/DANUWA-MD/DANUWA-MD/blob/main/images/DANUWA-MD.png?raw=true",
-          },
-          caption: header,
+          image: { url: "https://github.com/DANUWA-MD/DANUWA-MD/blob/main/images/DANUWA-MD.png?raw=true" },
+          caption: "📌 WALLPAPER DOWNLOADER",
         },
         { quoted: mek }
       );
 
       for (const wallpaper of selected) {
+        // Wallhaven API image URL fix
+        const imageUrl = wallpaper.path || wallpaper.file || wallpaper.thumbs?.large;
+        if (!imageUrl) continue;
+
         const caption = `
-📥 *Resolution:* ${wallpaper.resolution}
-🔗 *Link:* ${wallpaper.url}
-`;
+📥 *Resolution:* ${wallpaper.resolution || "Unknown"}
+🔗 *Link:* ${wallpaper.url || "https://wallhaven.cc/w/" + wallpaper.id}
+        `;
 
         await danuwa.sendMessage(
           from,
           {
-            image: { url: wallpaper.path },
+            image: { url: imageUrl },
             caption,
           },
           { quoted: mek }
@@ -71,5 +67,3 @@ cmd(
     }
   }
 );
-
-
