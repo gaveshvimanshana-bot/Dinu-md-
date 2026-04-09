@@ -8,10 +8,22 @@ cmd(
     category: "main",
     filename: __filename,
   },
-  async (danuwa, mek, m, { reply }) => {
-    const start = Date.now();
-    await reply("🏓 Pinging...");
-    const end = Date.now();
-    await reply(`🏓 Pong! Response time: *${end - start}ms*`);
+  async (conn, mek, m, { from, pushname }) => {
+    try {
+      const start = Date.now();
+
+      await conn.sendMessage(from, { text: "🏓 Pinging..." }, { quoted: mek });
+
+      const end = Date.now();
+
+      await conn.sendMessage(
+        from,
+        { text: `🏓 Pong! Response time: *${end - start}ms*` },
+        { quoted: mek }
+      );
+
+    } catch (e) {
+      console.log(e);
+    }
   }
 );
