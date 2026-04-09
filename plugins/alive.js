@@ -2,132 +2,27 @@ const config = require('../config');
 const { cmd, commands } = require('../command');
 const os = require("os");
 const { runtime } = require('../lib/functions');
+const yts = require('yt-search');
+const fetch = require('node-fetch');
 
 //================== ALIVE ==================
 cmd({
     pattern: "alive",
-    desc: "Check if bot is online",
+    desc: "Check bot online",
     category: "main",
     filename: __filename
 }, async(conn, mek, m, {from, pushname, reply}) => {
     try {
-        let aliveMsg = `
-👋 Hi ${pushname}!
-✨ DARK-CYBER-MD is online!
+        let msg = `
+👋 Hi ${pushname}
+✨ DARK-CYBER-MD Online
 
 ⏳ Uptime: ${runtime(process.uptime())}
-🛠 Owner: Mr Hashuwh
-📞 Owner Number: 94713457207`;
+🛠 Owner: Mr Hashuwh`;
 
         await conn.sendMessage(from, {
             image: { url: 'https://raw.githubusercontent.com/gaveshvimanshana-bot/Dinu-md-/refs/heads/main/Imqge/file_0000000025707208a5167eff51d93f68%20(1).png' },
-            caption: aliveMsg
-        }, { quoted: mek });
-
-    } catch (e) {
-        console.log(e);
-        reply(`❌ Error: ${e}`);
-    }
-});
-
-//================== PING ==================
-cmd({
-    pattern: "ping",
-    desc: "Check bot speed",
-    category: "main",
-    react: "⚡",
-    filename: __filename
-}, async (conn, mek, m, { from, reply }) => {
-    try {
-        const start = Date.now();
-        const msg = await conn.sendMessage(from, { text: '*```Pinging...```*' });
-        const ping = Date.now() - start;
-        await conn.sendMessage(from, { text: `⚡ Speed: ${ping}ms` }, { quoted: msg });
-    } catch (e) {
-        console.log(e);
-        reply(`${e}`);
-    }
-});
-
-//================== SYSTEM ==================
-cmd({
-    pattern: "system",
-    desc: "System info",
-    category: "main",
-    react: "💻",
-    filename: __filename
-}, async(conn, mek, m, { from, reply }) => {
-    try {
-        const total = (os.totalmem() / 1073741824).toFixed(2);
-        const free = (os.freemem() / 1073741824).toFixed(2);
-        const used = (total - free).toFixed(2);
-
-        let sys = `
-💻 SYSTEM INFO
-╭────────────
-│ OS : ${os.platform()}
-│ CPU : ${os.cpus().length}
-│ RAM : ${used}GB / ${total}GB
-│ Uptime : ${runtime(process.uptime())}
-╰────────────`;
-
-        await conn.sendMessage(from, { text: sys }, { quoted: mek });
-
-    } catch (e) {
-        console.log(e);
-        reply(`❌ Error`);
-    }
-});
-
-//================== MENU ==================
-cmd({
-    pattern: "menu",
-    desc: "Get menu",
-    category: "main",
-    react: "📜",
-    filename: __filename
-}, async(conn, mek, m, { from, pushname, reply }) => {
-    try {
-        let menu = {
-            main: '', download: '', group: '', owner: '',
-            convert: '', ai: '', tools: '', search: '',
-            fun: '', voice: '', other: ''
-        };
-
-        for (let cmd of commands) {
-            if (cmd.pattern && !cmd.dontAddCommandList) {
-                menu[cmd.category] += `.${cmd.pattern}\n`;
-            }
-        }
-
-        let text = `
-👋 Hello ${pushname}
-
-⏳ Uptime: ${runtime(process.uptime())}
-
-📥 Download
-${menu.download}
-
-🤖 AI
-${menu.ai}
-
-🔧 Main
-${menu.main}
-
-👥 Group
-${menu.group}
-
-🎉 Fun
-${menu.fun}
-
-🛠 Tools
-${menu.tools}
-
-> VIMA-MD`;
-
-        await conn.sendMessage(from, {
-            image: { url: 'https://raw.githubusercontent.com/gaveshvimanshana-bot/Dinu-md-/refs/heads/main/Imqge/file_0000000025707208a5167eff51d93f68%20(1).png' },
-            caption: text
+            caption: msg
         }, { quoted: mek });
 
     } catch (e) {
@@ -136,17 +31,106 @@ ${menu.tools}
     }
 });
 
-//================== GROUP COMMANDS ==================
+//================== PING ==================
+cmd({
+    pattern: "ping",
+    category: "main",
+    react: "⚡",
+    filename: __filename
+}, async (conn, mek, m, { from, reply }) => {
+    try {
+        const start = Date.now();
+        const m1 = await conn.sendMessage(from, { text: 'Pinging...' });
+        const ping = Date.now() - start;
+        await conn.sendMessage(from, { text: `⚡ ${ping}ms` }, { quoted: m1 });
+    } catch {
+        reply("Error");
+    }
+});
+
+//================== SYSTEM ==================
+cmd({
+    pattern: "system",
+    category: "main",
+    react: "💻",
+    filename: __filename
+}, async(conn, mek, m, { from, reply }) => {
+    try {
+        let total = (os.totalmem()/1073741824).toFixed(2);
+        let free = (os.freemem()/1073741824).toFixed(2);
+        let used = (total - free).toFixed(2);
+
+        let sys = `
+💻 SYSTEM
+OS: ${os.platform()}
+CPU: ${os.cpus().length}
+RAM: ${used}/${total} GB
+UPTIME: ${runtime(process.uptime())}`;
+
+        await conn.sendMessage(from, { text: sys }, { quoted: mek });
+
+    } catch {
+        reply("Error");
+    }
+});
+
+//================== MENU ==================
+cmd({
+    pattern: "menu",
+    category: "main",
+    react: "📜",
+    filename: __filename
+}, async(conn, mek, m, { from, pushname, reply }) => {
+    try {
+        let menu = {
+            main:'', download:'', group:'', owner:'',
+            convert:'', ai:'', tools:'', search:'',
+            fun:'', voice:'', other:''
+        };
+
+        for (let c of commands) {
+            if (c.pattern && !c.dontAddCommandList) {
+                menu[c.category] += `.${c.pattern}\n`;
+            }
+        }
+
+        let txt = `
+👋 Hello ${pushname}
+
+⏳ ${runtime(process.uptime())}
+
+🔧 Main
+${menu.main}
+
+👥 Group
+${menu.group}
+
+📥 Download
+${menu.download}
+
+> VIMA-MD`;
+
+        await conn.sendMessage(from, {
+            image: { url: 'https://raw.githubusercontent.com/gaveshvimanshana-bot/Dinu-md-/refs/heads/main/Imqge/file_0000000025707208a5167eff51d93f68%20(1).png' },
+            caption: txt
+        }, { quoted: mek });
+
+    } catch {
+        reply("Error");
+    }
+});
+
+//================== GROUP ==================
 
 // Kick
 cmd({
     pattern: "kick",
     category: "group",
-    react: "❌",
     filename: __filename
-}, async(conn, mek, m, { from, isGroup, isAdmins, isBotAdmins, quoted, reply }) => {
+}, async(conn, mek, m, { from, isGroup, isAdmins, isBotAdmins, isOwner, quoted, reply }) => {
+
     if (!isGroup) return reply("Group only");
-    if (!isAdmins) return reply("Admin only");
+    if (!isAdmins && !isOwner) return reply("Admin only");
     if (!isBotAdmins) return reply("Bot not admin");
 
     let user = quoted ? quoted.sender : m.mentionedJid[0];
@@ -160,15 +144,15 @@ cmd({
 cmd({
     pattern: "add",
     category: "group",
-    react: "➕",
     filename: __filename
-}, async(conn, mek, m, { from, isGroup, isAdmins, isBotAdmins, args, reply }) => {
+}, async(conn, mek, m, { from, isGroup, isAdmins, isBotAdmins, isOwner, args, reply }) => {
+
     if (!isGroup) return reply("Group only");
-    if (!isAdmins) return reply("Admin only");
+    if (!isAdmins && !isOwner) return reply("Admin only");
     if (!isBotAdmins) return reply("Bot not admin");
 
-    let num = args[0]?.replace(/[^0-9]/g, "") + "@s.whatsapp.net";
-    if (!num) return reply("Give number");
+    let num = args[0]?.replace(/[^0-9]/g,"") + "@s.whatsapp.net";
+    if (!args[0]) return reply("Give number");
 
     await conn.groupParticipantsUpdate(from, [num], "add");
     reply("✅ Added");
@@ -178,11 +162,11 @@ cmd({
 cmd({
     pattern: "promote",
     category: "group",
-    react: "⬆️",
     filename: __filename
-}, async(conn, mek, m, { from, isGroup, isAdmins, isBotAdmins, quoted, reply }) => {
+}, async(conn, mek, m, { from, isGroup, isAdmins, isBotAdmins, isOwner, quoted, reply }) => {
+
     if (!isGroup) return reply("Group only");
-    if (!isAdmins) return reply("Admin only");
+    if (!isAdmins && !isOwner) return reply("Admin only");
     if (!isBotAdmins) return reply("Bot not admin");
 
     let user = quoted ? quoted.sender : m.mentionedJid[0];
@@ -196,11 +180,11 @@ cmd({
 cmd({
     pattern: "demote",
     category: "group",
-    react: "⬇️",
     filename: __filename
-}, async(conn, mek, m, { from, isGroup, isAdmins, isBotAdmins, quoted, reply }) => {
+}, async(conn, mek, m, { from, isGroup, isAdmins, isBotAdmins, isOwner, quoted, reply }) => {
+
     if (!isGroup) return reply("Group only");
-    if (!isAdmins) return reply("Admin only");
+    if (!isAdmins && !isOwner) return reply("Admin only");
     if (!isBotAdmins) return reply("Bot not admin");
 
     let user = quoted ? quoted.sender : m.mentionedJid[0];
@@ -208,4 +192,42 @@ cmd({
 
     await conn.groupParticipantsUpdate(from, [user], "demote");
     reply("✅ Demoted");
+});
+
+//================== SONG ==================
+cmd({
+    pattern: "song",
+    alias: ["play"],
+    react: "🎵",
+    desc: "Download song",
+    category: "download",
+    filename: __filename
+}, async (conn, mek, m, { from, q, reply }) => {
+    try {
+        if (!q) return reply("❌ Song name ekak denna!");
+
+        let search = await yts(q);
+        if (!search.videos.length) return reply("❌ Not found!");
+
+        let video = search.videos[0];
+
+        await reply("⏳ Downloading...");
+
+        let api = `https://api.davidcyriltech.my.id/download/ytmp3?url=${encodeURIComponent(video.url)}`;
+        let res = await fetch(api);
+        let data = await res.json();
+
+        if (!data.success) return reply("❌ Failed!");
+
+        await conn.sendMessage(from, {
+            audio: { url: data.result.download_url },
+            mimetype: 'audio/mpeg'
+        }, { quoted: mek });
+
+        reply(`✅ ${video.title}`);
+
+    } catch (e) {
+        console.log(e);
+        reply("❌ Error");
+    }
 });
