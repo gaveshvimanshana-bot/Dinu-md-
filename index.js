@@ -139,7 +139,7 @@ if (mek.key?.remoteJid === 'status@broadcast') {
 
   if (config.AUTO_STATUS_SEEN === "true") {
     try {
-      await .readMessages([mek.key]);
+      await danuwa.readMessages([mek.key]);
       console.log(`[✓] Status seen: ${mek.key.id}`);
     } catch (e) {
       console.error("❌ Failed to mark status as seen:", e);
