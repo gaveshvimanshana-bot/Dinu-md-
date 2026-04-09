@@ -1,103 +1,53 @@
-const { cmd, commands } = require("../command");
-const yts = require("yt-search");
-const { ytmp3 } = require("@vreden/youtube_scraper");
+const config = require('../config');
+const { cmd } = require('../command');
+const yts = require('yt-search');
 
-cmd(
-  {
+cmd({
     pattern: "song",
-    react: "🎶",
-    desc: "Download Song",
+    alias: ["song", "play"],
+    react: "🎵",
+    desc: "Download audio from YouTube",
     category: "download",
-    filename: __filename,
-  },
-  async (
-    danuwa,
-    mek,
-    m,
-    {
-      from,
-      quoted,
-      body,
-      isCmd,
-      command,
-      args,
-      q,
-      isGroup,
-      sender,
-      senderNumber,
-      botNumber2,
-      botNumber,
-      pushname,
-      isMe,
-      isOwner,
-      groupMetadata,
-      groupName,
-      participants,
-      groupAdmins,
-      isBotAdmins,
-      isAdmins,
-      reply,
-    }
-  ) => {
+    use: ".song <query or url>",
+    filename: __filename
+}, async (conn, m, mek, { from, q, reply }) => {
     try {
-      if (!q) return reply("❌ *Please provide a song name or YouTube link*");
+        if (!q) return await reply("❌ Please provide a song name or YouTube URL!");
 
-      const search = await yts(q);
-      const data = search.videos[0];
-      const url = data.url;
+        let videoUrl, title;
+        
+        // Check if it's a URL
+        if (q.match(/(youtube\.com|youtu\.be)/)) {
+            videoUrl = q;
+            const videoInfo = await yts({ videoId: q.split(/[=/]/).pop() });
+            title = videoInfo.title;
+        } else {
+            // Search YouTube
+            const search = await yts(q);
+            if (!search.videos.length) return await reply("❌ No results found!");
+            videoUrl = search.videos[0].url;
+            title = search.videos[0].title;
+        }
 
-      let desc = `
-Song downloader
-🎬 *Title:* ${data.title}
-⏱️ *Duration:* ${data.timestamp}
-📅 *Uploaded:* ${data.ago}
-👀 *Views:* ${data.views.toLocaleString()}
-🔗 *Watch Here:* ${data.url}
-`;
+        await reply("⏳ Downloading audio...");
 
-      await danuwa.sendMessage(
-        from,
-        { image: { url: data.thumbnail }, caption: desc },
-        { quoted: mek }
-      );
+        // Use API to get audio
+        const apiUrl = `https://api.davidcyriltech.my.id/download/ytmp3?url=${encodeURIComponent(videoUrl)}`;
+        const response = await fetch(apiUrl);
+        const data = await response.json();
 
-      const quality = "192";
-      const songData = await ytmp3(url, quality);
+        if (!data.success) return await reply("❌ Failed to download audio!");
 
-      let durationParts = data.timestamp.split(":").map(Number);
-      let totalSeconds =
-        durationParts.length === 3
-          ? durationParts[0] * 3600 + durationParts[1] * 60 + durationParts[2]
-          : durationParts[0] * 60 + durationParts[1];
+        await conn.sendMessage(from, {
+            audio: { url: data.result.download_url },
+            mimetype: 'audio/mpeg',
+            ptt: false
+        }, { quoted: mek });
 
-      if (totalSeconds > 1800) {
-        return reply("⏳ *Sorry, audio files longer than 30 minutes are not supported.*");
-      }
+        await reply(`✅ *${title}* downloaded successfully!`);
 
-      await danuwa.sendMessage(
-        from,
-        {
-          audio: { url: songData.download.url },
-          mimetype: "audio/mpeg",
-        },
-        { quoted: mek }
-      );
-
-      await danuwa.sendMessage(
-        from,
-        {
-          document: { url: songData.download.url },
-          mimetype: "audio/mpeg",
-          fileName: `${data.title}.mp3`,
-          caption: "🎶 *Your song is ready to be played!*",
-        },
-        { quoted: mek }
-      );
-
-      return reply("✅ Thank you");
-    } catch (e) {
-      console.log(e);
-      reply(`❌ *Error:* ${e.message} 😞`);
+    } catch (error) {
+        console.error(error);
+        await reply(`❌ Error: ${error.message}`);
     }
-  }
-);
+});
