@@ -1,104 +1,95 @@
-const { cmd } = require("../command");
+const { cmd, commands } = require("../command");
 const getFbVideoInfo = require("@xaviabot/fb-downloader");
 
 cmd(
   {
     pattern: "fb",
     alias: ["facebook"],
-    react: "📥",
-    desc: "Download Facebook Videos (HD/SD/Audio)",
+    react: " 📥 ",
+    desc: "Download Facebook Video",
     category: "download",
     filename: __filename,
   },
-  async (conn, mek, m, { from, q, args, reply }) => {
+  async (
+    danuwa,
+    mek,
+    m,
+    {
+      from,
+      quoted,
+      body,
+      isCmd,
+      command,
+      args,
+      q,
+      isGroup,
+      sender,
+      senderNumber,
+      botNumber2,
+      botNumber,
+      pushname,
+      isMe,
+      isOwner,
+      groupMetadata,
+      groupName,
+      participants,
+      groupAdmins,
+      isBotAdmins,
+      isAdmins,
+      reply,
+    }
+  ) => {
     try {
-      if (!q) {
-        return reply("*❌ Please provide a Facebook video URL!*");
-      }
+      if (!q) return reply("*Please provide a valid Facebook video URL!* ❤️");
 
       const fbRegex = /(https?:\/\/)?(www\.)?(facebook|fb)\.com\/.+/;
-      if (!fbRegex.test(q)) {
-        return reply("*❌ Invalid Facebook URL!*");
+      if (!fbRegex.test(q))
+        return reply("*Invalid Facebook URL! Please check and try again.* ☹️");
+
+      reply("*Downloading your video...* ❤️");
+
+      const result = await getFbVideoInfo(q);
+      if (!result || (!result.sd && !result.hd)) {
+        return reply("*Failed to download video. Please try again later.* ☹️");
       }
 
-      await reply("*⏳ Downloading your video...*");
+      const { title, sd, hd } = result;
+      const bestQualityUrl = hd || sd;
+      const qualityText = hd ? "HD" : "SD";
 
-      const data = await getFbVideoInfo(q);
-
-      if (!data || (!data.sd && !data.hd)) {
-        return reply("*❌ Video not found or private!*");
-      }
-
-      const { title, sd, hd, thumbnail } = data;
-
-      // 👉 option detect
-      const type = args[1]; // hd / sd / audio
-
-      let videoUrl;
-      let quality;
-
-      if (type === "sd") {
-        videoUrl = sd;
-        quality = "SD";
-      } else if (type === "audio") {
-        videoUrl = hd || sd;
-        quality = "Audio";
-      } else {
-        videoUrl = hd || sd;
-        quality = hd ? "HD" : "SD";
-      }
-
-      // 👉 caption
-      const caption = `
-╭━━〔 📥 FB DOWNLOADER 〕━━⬣
+      const desc = `
+╭━━〔 *ＶＩＭＡ-ＭＤ✘📥 FB DOWNLOADER* 〕━━⬣
 ┃ 👻 *Title*: ${title || "Unknown"}
 ┃ 🎬 *Quality*: ${quality}
-╰━━━━━━━━━━━━━━━⬣
+╰━━━━━━━━━━━━━━━◯◦◦◦◦◦◦◦◦◦✤✳⬣
+
+> *𝗣𝗢𝗪𝗘𝗥𝗘𝗗 𝗕𝗬 𝗩𝗜𝗠𝗔-𝗠𝗗 ✘ 𝗩1 😚💙*
 `;
 
-      // 👉 thumbnail preview
-      await conn.sendMessage(
+      await danuwa.sendMessage(
         from,
         {
           image: {
-            url:
-              thumbnail ||
-              "https://i.ibb.co/2kRZ7fH/facebook-video-download.png",
+            url: "https://raw.githubusercontent.com/gaveshvimanshana-bot/Dinu-md-/refs/heads/main/Imqge/file_0000000025707208a5167eff51d93f68%20(1).png",
           },
-          caption: caption,
+          caption: desc,
         },
         { quoted: mek }
       );
 
-      // 👉 send audio or video
-      if (type === "audio") {
-        await conn.sendMessage(
-          from,
-          {
-            audio: { url: videoUrl },
-            mimetype: "audio/mp4",
-          },
-          { quoted: mek }
-        );
-      } else {
-        await conn.sendMessage(
-          from,
-          {
-            video: { url: videoUrl },
-            caption: `*✅ Downloaded in ${quality}*`,
-          },
-          { quoted: mek }
-        );
-      }
+      await danuwa.sendMessage(
+        from,
+        {
+          video: { url: bestQualityUrl },
+          caption: `*📥 Downloaded in ${qualityText} quality*`,
+        },
+        { quoted: mek }
+      );
 
-      // 👉 react done
-      await conn.sendMessage(from, {
-        react: { text: "✅", key: mek.key },
-      });
-
+      return reply("Thank you for using 𝗩𝗜𝗠𝗔-𝗠𝗗 😚");
     } catch (e) {
-      console.log(e);
-      reply(`*❌ Error:* ${e.message}`);
+      console.error(e);
+      reply(`*Error:* ${e.message || e}`);
     }
   }
 );
