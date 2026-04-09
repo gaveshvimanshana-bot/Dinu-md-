@@ -2,8 +2,8 @@ const config = require('../config');
 const { cmd, commands } = require('../command');
 const os = require("os");
 const { runtime } = require('../lib/functions');
-const yts = require('yt-search');
-const fetch = require('node-fetch');
+const axios = require("axios");
+const yts = require("yt-search");
 
 //================== ALIVE ==================
 cmd({
@@ -120,20 +120,19 @@ ${menu.download}
     }
 });
 
-//================== GROUP ==================
+//================== GROUP COMMANDS ==================
 
 // Kick
 cmd({
     pattern: "kick",
     category: "group",
     filename: __filename
-}, async(conn, mek, m, { from, isGroup, isAdmins, isBotAdmins, isOwner, quoted, reply }) => {
-
+}, async(conn, mek, m, { from, isGroup, isAdmins, isBotAdmins, isOwner, quoted, reply, m: msg }) => {
     if (!isGroup) return reply("Group only");
     if (!isAdmins && !isOwner) return reply("Admin only");
     if (!isBotAdmins) return reply("Bot not admin");
 
-    let user = quoted ? quoted.sender : m.mentionedJid[0];
+    let user = quoted ? quoted.sender : msg.mentionedJid[0];
     if (!user) return reply("Reply or tag user");
 
     await conn.groupParticipantsUpdate(from, [user], "remove");
@@ -146,7 +145,6 @@ cmd({
     category: "group",
     filename: __filename
 }, async(conn, mek, m, { from, isGroup, isAdmins, isBotAdmins, isOwner, args, reply }) => {
-
     if (!isGroup) return reply("Group only");
     if (!isAdmins && !isOwner) return reply("Admin only");
     if (!isBotAdmins) return reply("Bot not admin");
@@ -163,13 +161,12 @@ cmd({
     pattern: "promote",
     category: "group",
     filename: __filename
-}, async(conn, mek, m, { from, isGroup, isAdmins, isBotAdmins, isOwner, quoted, reply }) => {
-
+}, async(conn, mek, m, { from, isGroup, isAdmins, isBotAdmins, isOwner, quoted, reply, m: msg }) => {
     if (!isGroup) return reply("Group only");
     if (!isAdmins && !isOwner) return reply("Admin only");
     if (!isBotAdmins) return reply("Bot not admin");
 
-    let user = quoted ? quoted.sender : m.mentionedJid[0];
+    let user = quoted ? quoted.sender : msg.mentionedJid[0];
     if (!user) return reply("Reply or tag");
 
     await conn.groupParticipantsUpdate(from, [user], "promote");
@@ -181,20 +178,19 @@ cmd({
     pattern: "demote",
     category: "group",
     filename: __filename
-}, async(conn, mek, m, { from, isGroup, isAdmins, isBotAdmins, isOwner, quoted, reply }) => {
-
+}, async(conn, mek, m, { from, isGroup, isAdmins, isBotAdmins, isOwner, quoted, reply, m: msg }) => {
     if (!isGroup) return reply("Group only");
     if (!isAdmins && !isOwner) return reply("Admin only");
     if (!isBotAdmins) return reply("Bot not admin");
 
-    let user = quoted ? quoted.sender : m.mentionedJid[0];
+    let user = quoted ? quoted.sender : msg.mentionedJid[0];
     if (!user) return reply("Reply or tag");
 
     await conn.groupParticipantsUpdate(from, [user], "demote");
     reply("✅ Demoted");
 });
 
-//================== SONG ==================
+//================== SONG DOWNLOAD ==================
 cmd({
     pattern: "song",
     alias: ["play"],
@@ -213,21 +209,22 @@ cmd({
 
         await reply("⏳ Downloading...");
 
-        let api = `https://api.davidcyriltech.my.id/download/ytmp3?url=${encodeURIComponent(video.url)}`;
-        let res = await fetch(api);
-        let data = await res.json();
+        // Stable API for mp3
+        let api = `https://vihangayt.me/download/ytmp3?url=${encodeURIComponent(video.url)}`;
+        let res = await axios.get(api);
+        let data = res.data;
 
-        if (!data.success) return reply("❌ Failed!");
+        if (!data.status) return reply("❌ Download failed!");
 
         await conn.sendMessage(from, {
-            audio: { url: data.result.download_url },
-            mimetype: 'audio/mpeg'
+            audio: { url: data.result.dl_link },
+            mimetype: "audio/mpeg"
         }, { quoted: mek });
 
         reply(`✅ ${video.title}`);
 
     } catch (e) {
         console.log(e);
-        reply("❌ Error");
+        reply("❌ Song download error!");
     }
 });
