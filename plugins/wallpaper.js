@@ -12,7 +12,7 @@ cmd(
     filename: __filename,
   },
   async (
-    conn,
+    danuwa,
     mek,
     m,
     {
@@ -37,7 +37,7 @@ cmd(
 
       const header = `WALLPAPER DOWNLOADER`;
 
-      await conn.sendMessage(
+      await danuwa.sendMessage(
         from,
         {
           image: {
@@ -54,7 +54,7 @@ cmd(
 🔗 *Link:* ${wallpaper.url}
 `;
 
-        await conn.sendMessage(
+        await danuwa.sendMessage(
           from,
           {
             image: { url: wallpaper.path },
