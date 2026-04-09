@@ -1,70 +1,76 @@
-const { cmd } = require('../command');
-const os = require("os");
-const { runtime } = require('../lib/functions');
+
+const { cmd, commands } = require("../command");
+const fs = require("fs");
+const path = require("path");
+
+const pendingMenu = {};
+const numberEmojis = ["0️⃣","1️⃣","2️⃣","3️⃣","4️⃣","5️⃣","6️⃣","7️⃣","8️⃣","9️⃣"];
+
+const headerImage = "https://github.com/DANUWA-MD/DANUWA-MD/blob/main/images/DANUWA-MD.png?raw=true";
 
 cmd({
-    pattern: "menu",
-    alias: ["status", "runtime", "uptime"],
-    desc: "Check uptime and system status with audio",
-    category: "main",
-    react: "👋",
-    filename: __filename
-}, 
-async (conn, mek, m, { from, pushname, reply }) => {
-    try {
-        // -------------------------------
-        // Sri Lanka Date & Time
-        // -------------------------------
-        const now = new Date().toLocaleString("en-US", { timeZone: "Asia/Colombo" });
-        const date = new Date(now).toLocaleDateString("en-GB");
-        const time = new Date(now).toLocaleTimeString("en-GB");
+  pattern: "menu",
+  react: "📋",
+  desc: "Show command categories",
+  category: "main",
+  filename: __filename
+}, async (test, m, msg, { from, sender, reply }) => {
+  await test.sendMessage(from, { react: { text: "📋", key: m.key } });
 
-        // -------------------------------
-        // Status message
-        // -------------------------------
-        const status = `
-╭━━〔 *𝑽𝑰𝑴𝑨-𝑴𝐃* 〕━━┈⊷
-┃〠┃•👋 Hi: ${pushname}
-┃〠┃• ⏳ Uptime: ${runtime(process.uptime())}
-┃〠┃• 📅 Date: ${date}
-┃〠┃• 🕒 Time: ${time}
-┃〠┃• 📟 RAM: ${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)}MB / ${(os.totalmem() / 1024 / 1024).toFixed(2)}MB
-┃〠┃• 👨‍💻 Owner: Mr Gαʋҽʂԋ🔥
-┃〠┃• 📦 Version: v1.0.0
-╰──────────────┈⊷
+  const commandMap = {};
 
-*VIMA-MD MULTI DEVICE WHATSAPP BOT CREATED BY MR VIMA CODER* 😚🔥
-> *POWERED BY VIMA-MD* 🔥💙
-`;
+  for (const command of commands) {
+    if (command.dontAddCommandList) continue;
+    const category = (command.category || "MISC").toUpperCase();
+    if (!commandMap[category]) commandMap[category] = [];
+    commandMap[category].push(command);
+  }
 
-        // -------------------------------
-        // Send Image + Caption with Channel Forward Style
-        // -------------------------------
-        await conn.sendMessage(from, {
-            image: { url: 'https://raw.githubusercontent.com/gaveshvimanshana-bot/Dinu-md-/main/Imqge/file_0000000025707208a5167eff51d93f68%20(1).png' },
-            caption: status,
-            contextInfo: {
-                mentionedJid: [m.sender],
-                forwardingScore: 999,
-                isForwarded: true,
-                forwardedNewsletterMessageInfo: {
-                    newsletterJid: '120363405437936771@newsletter', 
-                    newsletterName: '𝐕𝐈𝐌𝐀-𝐌𝐃',
-                    serverMessageId: 190 
-                }
-            }
-        }, { quoted: mek });
+  const categories = Object.keys(commandMap);
 
-        // -------------------------------
-        // Send MP3 Audio
-        // -------------------------------
-        await conn.sendMessage(from, {
-            audio: { url: 'https://raw.githubusercontent.com/gaveshvimanshana-bot/Dinu-md-/main/Imqge/AUD-20240527-WA0004.mp3' },
-            mimetype: 'audio/mpeg'
-        }, { quoted: mek });
+  let menuText = `*MAIN MENU*\n`;
+  menuText += `───────────────────────\n`;
 
-    } catch (e) {
-        console.error("Error in alive command:", e);
-        reply(`An error occurred: ${e.message}`);
-    }
+  categories.forEach((cat, i) => {
+    const emojiIndex = (i + 1).toString().split("").map(n => numberEmojis[n]).join("");
+    menuText += `┃ ${emojiIndex} *${cat}* (${commandMap[cat].length})\n`;
+  });
+
+  menuText += `───────────────────────\n`;
+
+  await danuwa.sendMessage(from, {
+    image: { url: headerImage },
+    caption: menuText,
+  }, { quoted: m });
+
+  pendingMenu[sender] = { step: "category", commandMap, categories };
 });
+
+cmd({
+  filter: (text, { sender }) => pendingMenu[sender] && pendingMenu[sender].step === "category" && /^[1-9][0-9]*$/.test(text.trim())
+}, async (test, m, msg, { from, body, sender, reply }) => {
+  await danuwa.sendMessage(from, { react: { text: "✅", key: m.key } });
+
+  const { commandMap, categories } = pendingMenu[sender];
+  const index = parseInt(body.trim()) - 1;
+  if (index < 0 || index >= categories.length) return reply("❌ Invalid selection.");
+
+  const selectedCategory = categories[index];
+  const cmdsInCategory = commandMap[selectedCategory];
+
+  let cmdText = `*${selectedCategory} COMMANDS*\n`;
+  cmdsInCategory.forEach(c => {
+    const patterns = [c.pattern, ...(c.alias || [])].filter(Boolean).map(p => `.${p}`);
+    cmdText += `${patterns.join(", ")} - ${c.desc || "No description"}\n`;
+  });
+  cmdText += `───────────────────────\n`;
+  cmdText += `Total Commands: ${cmdsInCategory.length}\n`;
+
+  await danuwa.sendMessage(from, {
+    image: { url: headerImage },
+    caption: cmdText,
+  }, { quoted: m });
+
+  delete pendingMenu[sender];
+});
+
