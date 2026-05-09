@@ -19,7 +19,7 @@ cmd({
 🛠 Owner: Mr Hashuwh`;
 
         await conn.sendMessage(from, {
-            image: { url: 'https://raw.githubusercontent.com/gaveshvimanshana-bot/Dinu-md-/refs/heads/main/Imqge/file_0000000025707208a5167eff51d93f68%20(1).png' },
+            image: { url: 'https://raw.githubusercontent.com/gaveshvimanshana-bot/Dinu-md-/refs/heads/main/Screenshot_20260509_175348_WhatsApp.jpg' },
             caption: msg
         }, { quoted: mek });
 
@@ -109,7 +109,7 @@ ${menu.download}
 > VIMA-MD`;
 
         await conn.sendMessage(from, {
-            image: { url: 'https://raw.githubusercontent.com/gaveshvimanshana-bot/Dinu-md-/refs/heads/main/Imqge/file_0000000025707208a5167eff51d93f68%20(1).png' },
+            image: { url: 'https://raw.githubusercontent.com/gaveshvimanshana-bot/Dinu-md-/refs/heads/main/Screenshot_20260509_175348_WhatsApp.jpg' },
             caption: txt
         }, { quoted: mek });
 
