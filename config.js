@@ -9,7 +9,7 @@ SESSION_ID: process.env.SESSION_ID || "HZhTSTaR#GSbb2P9sxKEAnd9Azxm8lHr11m7owXEc
 AUTO_RECORDING: process.env.AUTO_RECORDING || "true",
 ANTI_BAD_WORD: process.env.ANTI_BAD_WORD || "true",
 AUTO_REPLY: process.env.AUTO_REPLY || "true",
-ALIVE_IMG: process.env.ALIVE_IMG || "https://files.catbox.moe/l06cb8.jpg",
+ALIVE_IMG: process.env.ALIVE_IMG || "https://raw.githubusercontent.com/gaveshvimanshana-bot/Dinu-md-/refs/heads/main/Screenshot_20260509_175348_WhatsApp.jpg",
 ALIVE_MSG: process.env.ALIVE_MSG || "HELLO IM WHITE MD CREATED BY Gavesh <NOW ALIVE> ",
 AUTO_STATUS_SEEN:"true",
 };
