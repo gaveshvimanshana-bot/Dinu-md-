@@ -48,6 +48,6 @@
     "node":">=20.0.0",
     "@xaviabot/fb-downloader":"^1.0.14",
     "@vreden/youtube_scraper":"^1.2.8",
-    "puppeteer":"24.43.0"
+    "puppeteer":"24.43.0" 
   }
 }
